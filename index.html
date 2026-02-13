@@ -104,77 +104,86 @@
         <p>点击楼栋查看详情</p>
         <p>滚轮缩放 | 拖拽移动</p>
       </div>
-
-      <div class="building-types">
-        <h3>楼栋类型</h3>
-        <div class="type-item">
-          <div class="type-color" style="background: #ff6b6b"></div>
-          <span>住宅楼 (6层)</span>
-        </div>
-        <div class="type-item">
-          <div class="type-color" style="background: #4ecdc4"></div>
-          <span>高层住宅 (12层)</span>
-        </div>
-        <div class="type-item">
-          <div class="type-color" style="background: #45b7d1"></div>
-          <span>办公楼 (10层)</span>
-        </div>
-        <div class="type-item">
-          <div class="type-color" style="background: #ffa07a"></div>
-          <span>商业楼 (4层)</span>
-        </div>
-        <div class="type-item">
-          <div class="type-color" style="background: #98d8c8"></div>
-          <span>配套设施 (2层)</span>
-        </div>
-      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
     <script>
-      // 楼栋类型配置 (移动端缩小版)
+      // 楼栋类型配置
       const BUILDING_TYPES = {
         RESIDENTIAL_LOW: {
           name: "住宅楼",
-          color: 0xff6b6b,
-          width: 40,
-          depth: 30,
-          height: 45,
+          normalImage: "assets/img_06.png",
+          activeImage: "assets/img_17.png",
+          width: 92,
+          height: 170,
           floors: 6,
         },
         RESIDENTIAL_HIGH: {
           name: "高层住宅",
-          color: 0x4ecdc4,
-          width: 45,
-          depth: 35,
-          height: 75,
+          normalImage: "assets/img_08.png",
+          activeImage: "assets/img_11.png",
+          width: 123,
+          height: 188,
           floors: 12,
         },
         OFFICE: {
           name: "办公楼",
-          color: 0x45b7d1,
-          width: 50,
-          depth: 40,
-          height: 65,
+          normalImage: "assets/img_09.png",
+          activeImage: "assets/img_13.png",
+          width: 132,
+          height: 126,
           floors: 10,
         },
         COMMERCIAL: {
           name: "商业楼",
-          color: 0xffa07a,
-          width: 60,
-          depth: 45,
-          height: 30,
+          normalImage: "assets/img_10.png",
+          activeImage: "assets/img_15.png",
+          width: 86,
+          height: 194,
           floors: 4,
         },
-        FACILITY: {
-          name: "配套设施",
-          color: 0x98d8c8,
-          width: 30,
-          depth: 25,
-          height: 20,
-          floors: 2,
-        },
       };
+
+      // 图片资源缓存
+      const imageCache = {};
+
+      // 预加载图片资源
+      function preloadImages() {
+        const promises = [];
+        Object.values(BUILDING_TYPES).forEach((config) => {
+          // 加载正常态图片
+          promises.push(
+            new Promise((resolve) => {
+              const img = new Image();
+              img.onload = () => {
+                imageCache[config.normalImage] = img;
+                resolve();
+              };
+              img.onerror = () => {
+                console.warn(`Failed to load: ${config.normalImage}`);
+                resolve();
+              };
+              img.src = config.normalImage;
+            })
+          );
+          // 加载激活态图片
+          promises.push(
+            new Promise((resolve) => {
+              const img = new Image();
+              img.onload = () => {
+                imageCache[config.activeImage] = img;
+                resolve();
+              };
+              img.onerror = () => {
+                console.warn(`Failed to load: ${config.activeImage}`);
+                resolve();
+              };
+              img.src = config.activeImage;
+            })
+          );
+        });
+        return Promise.all(promises);
+      }
 
       // 初始化Pixi应用 (固定尺寸)
       const app = new PIXI.Application({
@@ -199,16 +208,16 @@
 
       // 创建楼栋类
       class Building {
-        constructor(gridX, gridY, type, id) {
+        constructor(gridX, gridY, type, id, isActive = false) {
           this.gridX = gridX;
           this.gridY = gridY;
           this.type = type;
           this.id = id;
+          this.isActive = isActive;
           this.container = new PIXI.Container();
 
           const config = BUILDING_TYPES[type];
           this.width = config.width;
-          this.depth = config.depth;
           this.height = config.height;
 
           this.createBuilding(config);
@@ -216,99 +225,60 @@
         }
 
         createBuilding(config) {
-          const graphics = new PIXI.Graphics();
+          // 创建可点击区域边框（红色）
+          const hitArea = new PIXI.Graphics();
+          hitArea.lineStyle(2, 0xff0000, 0.8);
+          hitArea.drawRect(
+            -this.width / 2,
+            -this.height,
+            this.width,
+            this.height
+          );
+          hitArea.hitArea = new PIXI.Rectangle(
+            -this.width / 2,
+            -this.height,
+            this.width,
+            this.height
+          );
+          this.container.addChild(hitArea);
 
-          // 等距投影的三个面
-          const iso = toIsometric(0, 0, 0);
+          // 创建正常态精灵
+          const normalTexture = PIXI.Texture.from(config.normalImage);
+          this.normalSprite = new PIXI.Sprite(normalTexture);
+          this.normalSprite.anchor.set(0.5, 1); // 底部中心为锚点
+          this.normalSprite.visible = !this.isActive;
+          this.container.addChild(this.normalSprite);
 
-          // 顶面 (Top)
-          graphics.beginFill(this.lightenColor(config.color, 0.3));
-          const topPoints = [
-            toIsometric(0, 0, this.height),
-            toIsometric(this.width, 0, this.height),
-            toIsometric(this.width, this.depth, this.height),
-            toIsometric(0, this.depth, this.height),
-          ];
-          graphics.moveTo(topPoints[0].x, topPoints[0].y);
-          topPoints.forEach((p) => graphics.lineTo(p.x, p.y));
-          graphics.closePath();
-          graphics.endFill();
-
-          // 左面 (Left)
-          graphics.beginFill(this.lightenColor(config.color, 0.1));
-          const leftPoints = [
-            toIsometric(0, 0, this.height),
-            toIsometric(0, this.depth, this.height),
-            toIsometric(0, this.depth, 0),
-            toIsometric(0, 0, 0),
-          ];
-          graphics.moveTo(leftPoints[0].x, leftPoints[0].y);
-          leftPoints.forEach((p) => graphics.lineTo(p.x, p.y));
-          graphics.closePath();
-          graphics.endFill();
-
-          // 右面 (Right)
-          graphics.beginFill(config.color);
-          const rightPoints = [
-            toIsometric(this.width, 0, this.height),
-            toIsometric(this.width, 0, 0),
-            toIsometric(this.width, this.depth, 0),
-            toIsometric(this.width, this.depth, this.height),
-          ];
-          graphics.moveTo(rightPoints[0].x, rightPoints[0].y);
-          rightPoints.forEach((p) => graphics.lineTo(p.x, p.y));
-          graphics.closePath();
-          graphics.endFill();
-
-          // 边框
-          graphics.lineStyle(2, 0x000000, 0.3);
-          topPoints.forEach((p, i) => {
-            if (i === 0) graphics.moveTo(p.x, p.y);
-            else graphics.lineTo(p.x, p.y);
-          });
-
-          this.container.addChild(graphics);
+          // 创建激活态精灵
+          const activeTexture = PIXI.Texture.from(config.activeImage);
+          this.activeSprite = new PIXI.Sprite(activeTexture);
+          this.activeSprite.anchor.set(0.5, 1); // 底部中心为锚点
+          this.activeSprite.visible = this.isActive;
+          this.container.addChild(this.activeSprite);
 
           // 添加文字标签
           const text = new PIXI.Text(`${config.floors}F`, {
-            fontSize: 8,
+            fontSize: 12,
             fill: 0xffffff,
             fontWeight: "bold",
+            stroke: 0x000000,
+            strokeThickness: 2,
           });
           text.anchor.set(0.5);
-          const topCenter = toIsometric(
-            this.width / 2,
-            this.depth / 2,
-            this.height
-          );
-          text.x = topCenter.x;
-          text.y = topCenter.y - 5;
+          text.y = -this.height + 20;
           this.container.addChild(text);
         }
 
-        lightenColor(color, amount) {
-          const r = (color >> 16) & 0xff;
-          const g = (color >> 8) & 0xff;
-          const b = color & 0xff;
-
-          return (
-            (Math.min(255, r + r * amount) << 16) +
-            (Math.min(255, g + g * amount) << 8) +
-            Math.min(255, b + b * amount)
-          );
+        setActive(active) {
+          if (this.isActive === active) return;
+          this.isActive = active;
+          this.normalSprite.visible = !active;
+          this.activeSprite.visible = active;
         }
 
         setupInteraction() {
           this.container.eventMode = "static";
           this.container.cursor = "pointer";
-
-          this.container.on("pointerover", () => {
-            this.container.scale.set(1.05);
-          });
-
-          this.container.on("pointerout", () => {
-            this.container.scale.set(1);
-          });
 
           this.container.on("pointertap", () => {
             this.onClick();
@@ -321,16 +291,13 @@
                     <h2>${config.name} #${this.id}</h2>
                     <p>楼层: ${config.floors}层</p>
                     <p>位置: (${this.gridX}, ${this.gridY})</p>
-                    <p>高度: ${this.height}米</p>
-                    <p>占地: ${this.width}x${this.depth}m²</p>
+                    <p>高度: ${this.height}px</p>
+                    <p>宽度: ${this.width}px</p>
                 `;
           document.getElementById("infoPanel").innerHTML = info;
 
-          // 高亮效果
-          this.container.scale.set(1.1);
-          setTimeout(() => {
-            this.container.scale.set(1);
-          }, 200);
+          // 更新激活状态
+          buildings.forEach((b) => b.setActive(b.id === this.id));
         }
 
         setPosition(x, y) {
@@ -343,7 +310,7 @@
       // 生成楼栋布局
       let buildings = [];
 
-      function generateBuildings() {
+      function generateBuildings(activeId = null) {
         // 清空现有楼栋
         buildings.forEach((b) => worldContainer.removeChild(b.container));
         buildings = [];
@@ -352,49 +319,26 @@
         const gridSize = 50;
         let buildingId = 1;
 
-        // 紧凑布局 - 建筑紧贴
+        // 2x2 布局
         const layout = [
-          [0, 0],
-          [2, 0],
-          [4, 0],
-          [6, 0],
-          [8, 0],
-          [10, 0],
-          [0, 1],
           [2, 1],
           [4, 1],
-          [6, 1],
-          [8, 1],
-          [10, 1],
-          [0, 2],
-          [2, 2],
-          [4, 2],
-          [6, 2],
-          [8, 2],
-          [10, 2],
-          [0, 3],
           [2, 3],
           [4, 3],
-          [6, 3],
-          [8, 3],
-          [10, 3],
-          [0, 4],
-          [2, 4],
-          [4, 4],
-          [6, 4],
-          [8, 4],
-          [10, 4],
-          [0, 5],
-          [2, 5],
-          [4, 5],
-          [6, 5],
-          [8, 5],
-          [10, 5],
         ];
 
-        layout.forEach(([gx, gy]) => {
-          const randomType = types[Math.floor(Math.random() * types.length)];
-          const building = new Building(gx, gy, randomType, buildingId++);
+        // 依次使用四种类型
+        const typeKeys = [
+          "RESIDENTIAL_LOW",
+          "RESIDENTIAL_HIGH",
+          "OFFICE",
+          "COMMERCIAL",
+        ];
+
+        layout.forEach(([gx, gy], index) => {
+          const id = buildingId++;
+          const isActive = activeId && id === activeId;
+          const building = new Building(gx, gy, typeKeys[index], id, isActive);
           building.setPosition(gx * gridSize, gy * gridSize);
           buildings.push(building);
           worldContainer.addChild(building.container);
@@ -412,48 +356,14 @@
         });
       }
 
-      // 初始化相机位置 (适配移动端)
-      worldContainer.x = 50;
-      worldContainer.y = 30;
-      worldContainer.scale.set(1);
+      // 初始化相机位置 (居中显示)
+      worldContainer.x = 406;
+      worldContainer.y = 180;
 
-      // 添加拖拽功能
-      let isDragging = false;
-      let dragStart = { x: 0, y: 0 };
-      const container = document.getElementById("gameContainer");
-
-      container.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        dragStart = {
-          x: e.clientX - worldContainer.x,
-          y: e.clientY - worldContainer.y,
-        };
+      // 预加载图片后生成楼栋
+      preloadImages().then(() => {
+        generateBuildings();
       });
-
-      container.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-          worldContainer.x = e.clientX - dragStart.x;
-          worldContainer.y = e.clientY - dragStart.y;
-        }
-      });
-
-      container.addEventListener("mouseup", () => {
-        isDragging = false;
-      });
-
-      // 添加缩放功能
-      container.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        const scaleFactor = e.deltaY > 0 ? 0.95 : 1.05;
-        const newScale = worldContainer.scale.x * scaleFactor;
-
-        if (newScale >= 0.3 && newScale <= 2) {
-          worldContainer.scale.set(newScale);
-        }
-      });
-
-      // 初始生成楼栋
-      generateBuildings();
     </script>
   </body>
 </html>
