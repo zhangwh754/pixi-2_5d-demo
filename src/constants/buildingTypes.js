@@ -10,14 +10,14 @@ import img17 from "/assets/img_17.png";
 
 // 形状模板类型
 const SHAPE = {
-  // 矩形
-  RECT: "rect",
-  // 梯形（左窄右宽）
-  TRAPEZOID_LEFT: "trapezoid_left",
-  // 梯形（右窄左宽）
-  TRAPEZOID_RIGHT: "trapezoid_right",
-  // 三角形
-  TRIANGLE: "triangle",
+  // 形状1（左窄右宽梯形）
+  TYPE_1: "type_1",
+  // 形状2（矩形）
+  TYPE_2: "type_2",
+  // 形状3（三角形）
+  TYPE_3: "type_3",
+  // 形状4（右窄左宽梯形）
+  TYPE_4: "type_4",
 };
 
 /**
@@ -33,97 +33,98 @@ function generatePolygon(shapeType, width, height, topScale = 1) {
   const topHalfW = halfW * topScale;
 
   switch (shapeType) {
-    case SHAPE.TRAPEZOID_LEFT:
-      // 左窄右宽梯形
+    case SHAPE.TYPE_1:
+      // 左窄右宽梯形 - img_06
       return [
-        {
-          x: -45.54129094117508,
-          y: -136.61997985839844,
-        },
+        { x: -45.54129094117508, y: -136.61997985839844 },
         { x: 13.098723707262423, y: -169.89999389648438 },
-        {
-          x: 42.7787469006218,
-          y: -150.05999755859375,
-        },
-        {
-          x: 44.69872981077805,
-          y: -38.06001281738281,
-        },
-        {
-          x: -11.621246995862577,
-          y: -1.5799713134765625,
-        },
-        {
-          x: -44.90127629273758,
-          y: -20.779953002929688,
-        },
+        { x: 42.7787469006218, y: -150.05999755859375 },
+        { x: 44.69872981077805, y: -38.06001281738281 },
+        { x: -11.621246995862577, y: -1.5799713134765625 },
+        { x: -44.90127629273758, y: -20.779953002929688 },
       ];
-    case SHAPE.TRAPEZOID_RIGHT:
-      // 右窄左宽梯形
+    case SHAPE.TYPE_2:
+      // 矩形 - img_08
       return [
-        { x: -halfW, y: -height }, // 左上
-        { x: halfW, y: -height }, // 右上
-        { x: -halfW, y: 0 }, // 左下
-        { x: halfW, y: 0 }, // 右下
+        { x: -60.93875056273117, y: -161.0199737548828 },
+        { x: -16.778746900621798, y: -187.25999450683594 },
+        { x: 60.02127140992508, y: -143.09999084472656 },
+        { x: 61.30127018922195, y: -27.900009155273438 },
+        { x: 15.221253099378202, y: -1.0200042724609375 },
+        { x: -60.93875056273117, y: -46.46000671386719 },
       ];
-    case SHAPE.TRIANGLE:
-      // 三角形（简约版）
+    case SHAPE.TYPE_3:
+      // 三角形 - img_09
       return [
-        { x: 0, y: -height }, // 顶点
-        { x: halfW, y: 0 }, // 右下
-        { x: -halfW, y: 0 }, // 左下
+        { x: -64.98129338258133, y: -99.02000427246094 },
+        { x: -20.821228685315702, y: -123.97996520996094 },
+        { x: -13.781281175550077, y: -118.86000061035156 },
+        { x: -4.8212286853157025, y: -125.25999450683594 },
+        { x: 64.93872004515305, y: -84.94001770019531 },
+        { x: 65.57873469359055, y: -27.340011596679688 },
+        { x: 57.2587273693718, y: -21.579971313476562 },
+        { x: 48.93872004515305, y: -26.060012817382812 },
+        { x: 4.7787469006217975, y: -1.0999908447265625 },
+        { x: -64.98129338258133, y: -40.13999938964844 },
+        { x: -64.98129338258133, y: -100.30000305175781 },
       ];
-    case SHAPE.RECT:
+    case SHAPE.TYPE_4:
+      // 右窄左宽梯形 - img_10
+      return [
+        { x: -42.800018310546875, y: -170.5800018310547 },
+        { x: -3.119964599609375, y: -192.97999572753906 },
+        { x: 42.959991455078125, y: -168.0199737548828 },
+        { x: 42.959991455078125, y: -24.659988403320312 },
+        { x: 2, y: -0.3400115966796875 },
+        { x: -42.160003662109375, y: -25.939987182617188 },
+      ];
     default:
-      // 矩形
       return [
-        { x: -halfW, y: -height }, // 左上
-        { x: halfW, y: -height }, // 右上
-        { x: halfW, y: 0 }, // 右下
-        { x: -halfW, y: 0 }, // 左下
+        { x: -halfW, y: -height },
+        { x: halfW, y: -height },
+        { x: halfW, y: 0 },
+        { x: -halfW, y: 0 },
       ];
   }
 }
 
 // 楼栋类型配置
 export const BUILDING_TYPES = {
-  RESIDENTIAL_LOW: {
-    name: "住宅楼",
+  BUILDING_1: {
+    name: "类型1",
     normalImage: img06,
     activeImage: img17,
     width: 92,
     height: 170,
     floors: 6,
-    shape: SHAPE.TRAPEZOID_LEFT,
-    topScale: 0.65,
+    shape: SHAPE.TYPE_1,
   },
-  RESIDENTIAL_HIGH: {
-    name: "高层住宅",
+  BUILDING_2: {
+    name: "类型2",
     normalImage: img08,
     activeImage: img11,
     width: 123,
     height: 188,
     floors: 12,
-    shape: SHAPE.RECT,
+    shape: SHAPE.TYPE_2,
   },
-  OFFICE: {
-    name: "办公楼",
+  BUILDING_3: {
+    name: "类型3",
     normalImage: img09,
     activeImage: img13,
     width: 132,
     height: 126,
     floors: 10,
-    shape: SHAPE.RECT,
+    shape: SHAPE.TYPE_3,
   },
-  COMMERCIAL: {
-    name: "商业楼",
+  BUILDING_4: {
+    name: "类型4",
     normalImage: img10,
     activeImage: img15,
     width: 86,
     height: 194,
     floors: 4,
-    shape: SHAPE.TRAPEZOID_RIGHT,
-    topScale: 0.5,
+    shape: SHAPE.TYPE_4,
   },
 };
 
@@ -137,21 +138,23 @@ export function getBuildingPolygon(config) {
     config.shape,
     config.width,
     config.height,
-    config.topScale,
+    config.topScale
   );
 }
 
 // 布局配置 - 每个元素为 [x, y, typeKey]
 export const LAYOUT_CONFIG = {
   gridSize: 50,
+  // 全局缩放比例
+  scale: 0.6,
   buildings: [
-    [0, 1, "RESIDENTIAL_LOW"],
-    [0.8, 1, "RESIDENTIAL_LOW"],
-    [1.6, 1, "RESIDENTIAL_LOW"],
-    [2.4, 1, "RESIDENTIAL_LOW"],
-    // [2, 3, "RESIDENTIAL_HIGH"],
-    // [4, 3, "OFFICE"],
-    // [6, 2, "COMMERCIAL"],
+    [2.8, 1.4, "BUILDING_1"],
+    [2.8, 2.2, "BUILDING_1"],
+    [2.8, 3.0, "BUILDING_1"],
+    // [0, 2.4, "BUILDING_1"],
+    // [2, 3, "BUILDING_2"],
+    // [4, 3, "BUILDING_3"],
+    // [2, 2, "BUILDING_4"],
   ],
 };
 
