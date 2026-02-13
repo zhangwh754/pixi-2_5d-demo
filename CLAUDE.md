@@ -15,6 +15,7 @@ Open `index.html` directly in a browser. No build or server required.
 **Entry**: `index.html` initializes `PIXI.Application` and creates a `worldContainer` scene.
 
 **Core Systems**:
+
 - `toIsometric(x, y, z)` - Converts 3D coordinates to 2D isometric projection
 - `Building` class - Renders 3-faced isometric buildings (top, left, right faces) with windows
 - `BUILDING_TYPES` - 5 building configurations (Residential Low/High, Office, Commercial, Facility)

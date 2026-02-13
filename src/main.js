@@ -35,8 +35,8 @@ async function initApp() {
   worldContainer.x = CAMERA_CONFIG.initialX;
   worldContainer.y = CAMERA_CONFIG.initialY;
 
-  // 初始化交互
-  initInteraction();
+  // TODO 关闭了交互事件
+  // initInteraction();
 }
 
 /**
@@ -103,7 +103,7 @@ function generateBuildings(activeId = null) {
       isActive,
       (selectedId) => {
         buildings.forEach((b) => b.setActive(b.id === selectedId));
-      }
+      },
     );
     building.setPosition(gx * gridSize, gy * gridSize);
     buildings.push(building);
