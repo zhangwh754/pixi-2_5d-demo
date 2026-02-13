@@ -1,7 +1,10 @@
-import { Container, Graphics, Sprite, Text, Texture, Rectangle } from "pixi.js";
+import { Container, Graphics, Sprite, Text, Texture, Polygon } from "pixi.js";
 import { toIsometric } from "../utils/isometric.js";
 import { updateInfoPanel } from "../utils/isometric.js";
-import { BUILDING_TYPES } from "../constants/buildingTypes.js";
+import {
+  BUILDING_TYPES,
+  getBuildingPolygon,
+} from "../constants/buildingTypes.js";
 
 /**
  * 建筑类
@@ -40,18 +43,24 @@ export class Building {
    * @param {Object} config - 建筑配置
    */
   createBuilding(config) {
-    // 创建可点击区域边框（红色）
-    const hitArea = new Graphics();
-    hitArea.setStrokeStyle({ width: 2, color: 0xff0000, alpha: 0.8 });
-    hitArea.rect(-this.width / 2, -this.height, this.width, this.height);
-    hitArea.stroke();
-    hitArea.hitArea = new Rectangle(
-      -this.width / 2,
-      -this.height,
-      this.width,
-      this.height
-    );
-    this.container.addChild(hitArea);
+    // 获取多边形顶点数据
+    const polygon = getBuildingPolygon(config);
+
+    // 设置容器多边形点击区域
+    const points = polygon.flatMap((p) => [p.x, p.y]);
+    this.container.hitArea = new Polygon(points);
+
+    // TODO 建筑图形的红色边框
+    // 创建可点击区域边框（红色多边形）
+    // const border = new Graphics();
+    // border.setStrokeStyle({ width: 2, color: 0xff0000, alpha: 0.8 });
+    // border.moveTo(polygon[0].x, polygon[0].y);
+    // for (let i = 1; i < polygon.length; i++) {
+    //   border.lineTo(polygon[i].x, polygon[i].y);
+    // }
+    // border.closePath();
+    // border.stroke();
+    // this.container.addChild(border);
 
     // 创建正常态精灵
     const normalTexture = Texture.from(config.normalImage);
@@ -111,16 +120,21 @@ export class Building {
     this.container.eventMode = "static";
     this.container.cursor = "pointer";
 
-    this.container.on("pointertap", () => {
-      this.onClick();
+    this.container.on("pointertap", (event) => {
+      this.onClick(event);
     });
   }
 
   /**
    * 点击事件处理
+   * @param {Object} event - 点击事件对象
    */
-  onClick() {
+  onClick(event) {
     updateInfoPanel(this, "infoPanel");
+
+    // 获取点击在容器内的本地坐标
+    const localPos = event.getLocalPosition(this.container);
+    console.log("click xy:", { x: localPos.x, y: localPos.y });
 
     // 通过回调更新所有建筑的激活状态
     if (this.onSelect) {
