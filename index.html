@@ -27,7 +27,7 @@
         height: 375px;
         position: relative;
         overflow: hidden;
-        background: #87ceeb;
+        background: url(assets/img_05.png) center/100% 100% no-repeat;
         border-radius: 8px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         touch-action: none;
@@ -93,33 +93,6 @@
         border-radius: 2px;
         border: 1px solid #ccc;
       }
-
-      .controls {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 8px 10px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      }
-
-      .controls button {
-        display: block;
-        width: 100%;
-        margin: 4px 0;
-        padding: 5px 10px;
-        background: #4caf50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 11px;
-      }
-
-      .controls button:hover {
-        background: #45a049;
-      }
     </style>
   </head>
   <body>
@@ -154,11 +127,6 @@
           <div class="type-color" style="background: #98d8c8"></div>
           <span>配套设施 (2层)</span>
         </div>
-      </div>
-
-      <div class="controls">
-        <button onclick="resetView()">重置</button>
-        <button onclick="randomizeBuildings()">随机</button>
       </div>
     </div>
 
@@ -212,7 +180,7 @@
       const app = new PIXI.Application({
         width: 812,
         height: 375,
-        background: "#87CEEB",
+        backgroundAlpha: 0,
         antialias: true,
       });
       document.getElementById("gameCanvas").appendChild(app.view);
@@ -292,9 +260,6 @@
           graphics.closePath();
           graphics.endFill();
 
-          // 绘制窗户
-          this.drawWindows(graphics, config);
-
           // 边框
           graphics.lineStyle(2, 0x000000, 0.3);
           topPoints.forEach((p, i) => {
@@ -319,24 +284,6 @@
           text.x = topCenter.x;
           text.y = topCenter.y - 5;
           this.container.addChild(text);
-        }
-
-        drawWindows(graphics, config) {
-          const windowsPerFloor = Math.floor(this.width / 20);
-          const floorHeight = this.height / config.floors;
-
-          // 右面窗户
-          for (let floor = 0; floor < config.floors; floor++) {
-            for (let win = 0; win < windowsPerFloor; win++) {
-              const z = floorHeight * floor + floorHeight * 0.3;
-              const y = (this.depth / windowsPerFloor) * win + this.depth * 0.2;
-
-              const winPos = toIsometric(this.width, y, z);
-              graphics.beginFill(0xffffaa, 0.8);
-              graphics.drawRect(winPos.x - 3, winPos.y - 4, 6, 8);
-              graphics.endFill();
-            }
-          }
         }
 
         lightenColor(color, amount) {
@@ -504,17 +451,6 @@
           worldContainer.scale.set(newScale);
         }
       });
-
-      // 全局函数
-      window.resetView = function () {
-        worldContainer.x = 50;
-        worldContainer.y = 30;
-        worldContainer.scale.set(1);
-      };
-
-      window.randomizeBuildings = function () {
-        generateBuildings();
-      };
 
       // 初始生成楼栋
       generateBuildings();
