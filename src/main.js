@@ -89,7 +89,7 @@ function generateBuildings(activeId = null) {
   buildings.forEach((b) => worldContainer.removeChild(b.container));
   buildings = [];
 
-  const { gridSize, buildings: buildingList } = LAYOUT_CONFIG;
+  const { gridSize, scale, buildings: buildingList } = LAYOUT_CONFIG;
   let buildingId = 1;
 
   buildingList.forEach(([gx, gy, typeKey]) => {
@@ -101,9 +101,10 @@ function generateBuildings(activeId = null) {
       typeKey,
       id,
       isActive,
+      scale,
       (selectedId) => {
         buildings.forEach((b) => b.setActive(b.id === selectedId));
-      },
+      }
     );
     building.setPosition(gx * gridSize, gy * gridSize);
     buildings.push(building);

@@ -17,17 +17,20 @@ export class Building {
    * @param {string} type - 建筑类型键名
    * @param {number} id - 建筑ID
    * @param {boolean} isActive - 是否激活状态
+   * @param {number} scale - 缩放比例
    * @param {Function} onSelect - 选中回调函数
    */
-  constructor(gridX, gridY, type, id, isActive = false, onSelect = null) {
+  constructor(gridX, gridY, type, id, isActive = false, scale = 1, onSelect = null) {
     this.gridX = gridX;
     this.gridY = gridY;
     this.type = type;
     this.id = id;
     this.onSelect = onSelect;
     this.isActive = isActive;
+    this.scale = scale;
 
     this.container = new Container();
+    this.container.scale.set(scale);
 
     const config = BUILDING_TYPES[type];
     this.config = config;
