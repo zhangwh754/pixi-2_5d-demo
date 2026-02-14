@@ -96,7 +96,6 @@ export const BUILDING_TYPES = {
     activeImage: img17,
     width: 92,
     height: 170,
-    floors: 6,
     shape: SHAPE.TYPE_1,
   },
   BUILDING_2: {
@@ -105,7 +104,6 @@ export const BUILDING_TYPES = {
     activeImage: img11,
     width: 123,
     height: 188,
-    floors: 12,
     shape: SHAPE.TYPE_2,
   },
   BUILDING_3: {
@@ -114,7 +112,6 @@ export const BUILDING_TYPES = {
     activeImage: img13,
     width: 132,
     height: 126,
-    floors: 10,
     shape: SHAPE.TYPE_3,
   },
   BUILDING_4: {
@@ -123,7 +120,6 @@ export const BUILDING_TYPES = {
     activeImage: img15,
     width: 86,
     height: 194,
-    floors: 4,
     shape: SHAPE.TYPE_4,
   },
 };
@@ -138,7 +134,7 @@ export function getBuildingPolygon(config) {
     config.shape,
     config.width,
     config.height,
-    config.topScale,
+    config.topScale
   );
 }
 
@@ -148,40 +144,40 @@ export const LAYOUT_CONFIG = {
   // 全局缩放比例
   scale: 0.5,
   buildings: [
-    [2.8, 1.4, "BUILDING_1"],
-    [2.8, 2.1, "BUILDING_1"],
-    [2.8, 2.8, "BUILDING_1"],
+    [2.8, 1.4, "BUILDING_1", "17号"],
+    [2.8, 2.1, "BUILDING_1", "18号"],
+    [2.8, 2.8, "BUILDING_1", "19号"],
 
-    [0.8, 4.5, "BUILDING_2"],
-    [1.73, 4.5, "BUILDING_2"],
-    [2.66, 4.5, "BUILDING_2"],
+    [0.8, 4.5, "BUILDING_2", "20号"],
+    [1.73, 4.5, "BUILDING_2", "21号"],
+    [2.66, 4.5, "BUILDING_2", "22号"],
 
-    [-0.2, 3.3, "BUILDING_2"],
-    [0.73, 3.3, "BUILDING_2"],
+    [-0.2, 3.3, "BUILDING_2", "12号"],
+    [0.73, 3.3, "BUILDING_2", "13号"],
 
-    [-1, 2.1, "BUILDING_2"],
-    [-0.07, 2.1, "BUILDING_2"],
-    [0.86, 2.1, "BUILDING_2"],
+    [-1, 2.1, "BUILDING_2", "9号"],
+    [-0.07, 2.1, "BUILDING_2", "10号"],
+    [0.86, 2.1, "BUILDING_2", "11号"],
 
-    [-1.5, 0.9, "BUILDING_2"],
-    [-0.57, 0.9, "BUILDING_2"],
-    [0.36, 0.9, "BUILDING_2"],
-    [1.29, 0.9, "BUILDING_2"],
+    [-1.5, 0.9, "BUILDING_2", "5号"],
+    [-0.57, 0.9, "BUILDING_2", "6号"],
+    [0.36, 0.9, "BUILDING_2", "7号"],
+    [1.29, 0.9, "BUILDING_2", "8号"],
 
-    [-1.5, -0.4, "BUILDING_2"],
-    [-0.57, -0.4, "BUILDING_2"],
-    [0.36, -0.4, "BUILDING_2"],
-    [1.29, -0.4, "BUILDING_2"],
+    [-1.5, -0.4, "BUILDING_2", "1号"],
+    [-0.57, -0.4, "BUILDING_2", "2号"],
+    [0.36, -0.4, "BUILDING_2", "3号"],
+    [1.29, -0.4, "BUILDING_2", "4号"],
 
-    [2.8, -0.1, "BUILDING_3"],
-    [2.8, -0.8, "BUILDING_3"],
-    [2.8, -1.5, "BUILDING_3"],
+    [2.8, -0.1, "BUILDING_3", "16号"],
+    [2.8, -0.8, "BUILDING_3", "15号"],
+    [2.8, -1.5, "BUILDING_3", "14号"],
 
-    [-1.1, -2.1, "BUILDING_4"],
-    [-0.55, -2.2, "BUILDING_4"],
-    [0, -2.2, "BUILDING_4"],
-    [0.55, -2.2, "BUILDING_4"],
-    [1.1, -2.1, "BUILDING_4"],
+    [-1.1, -2.1, "BUILDING_4", "371号"],
+    [-0.55, -2.2, "BUILDING_4", "367号"],
+    [0, -2.2, "BUILDING_4", "363号"],
+    [0.55, -2.2, "BUILDING_4", "359号"],
+    [1.1, -2.1, "BUILDING_4", "355号"],
   ],
 };
 

@@ -1,12 +1,6 @@
 <template>
   <div class="isometric-wrapper">
     <div ref="canvasContainer" class="canvas-container"></div>
-
-    <div class="info-panel" id="infoPanel">
-      <h2>伪2.5D小区展示</h2>
-      <p>点击楼栋查看详情</p>
-      <p>滚轮缩放 | 拖拽移动</p>
-    </div>
   </div>
 </template>
 
@@ -55,8 +49,8 @@ async function initApp() {
   worldContainer.x = CAMERA_CONFIG.initialX;
   worldContainer.y = CAMERA_CONFIG.initialY;
 
-  // 初始化交互
-  initInteraction();
+  // TODO 初始化交互
+  // initInteraction();
 }
 
 /**
@@ -112,20 +106,17 @@ function generateBuildings(activeId = null) {
   const { gridSize, scale, buildings: buildingList } = LAYOUT_CONFIG;
   let buildingId = 1;
 
-  buildingList.forEach(([gx, gy, typeKey]) => {
+  buildingList.forEach(([gx, gy, typeKey, text]) => {
     const id = buildingId++;
     const isActive = activeId && id === activeId;
-    const building = new Building(
-      gx,
-      gy,
-      typeKey,
-      id,
+    const building = new Building(gx, gy, typeKey, id, {
+      text: text,
       isActive,
       scale,
-      (selectedId) => {
+      onSelect: (selectedId) => {
         buildings.forEach((b) => b.setActive(b.id === selectedId));
       },
-    );
+    });
     building.setPosition(gx * gridSize, gy * gridSize);
     buildings.push(building);
     worldContainer.addChild(building.container);
@@ -140,33 +131,6 @@ function generateBuildings(activeId = null) {
 
   buildings.forEach((b, index) => {
     worldContainer.setChildIndex(b.container, index);
-  });
-}
-
-/**
- * 更新信息面板
- * @param {Object} building - 建筑对象
- */
-function updateInfoPanel(building) {
-  const { config, id, gridX, gridY, width, height } = building;
-  const info = `
-    <h2>${config.name} #${id}</h2>
-    <p>楼层: ${config.floors}层</p>
-    <p>位置: (${gridX}, ${gridY})</p>
-    <p>高度: ${height}px</p>
-    <p>宽度: ${width}px</p>
-  `;
-  document.getElementById("infoPanel").innerHTML = info;
-
-  // 同步到 Vue 事件
-  emit("building-select", {
-    id,
-    name: config.name,
-    floors: config.floors,
-    gridX,
-    gridY,
-    width,
-    height,
   });
 }
 
@@ -200,29 +164,5 @@ onUnmounted(() => {
 .canvas-container {
   width: 812px;
   height: 375px;
-}
-
-.info-panel {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 10px 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  max-width: 140px;
-}
-
-.info-panel h2 {
-  margin: 0 0 6px 0;
-  font-size: 12px;
-  color: #333;
-}
-
-.info-panel p {
-  margin: 3px 0;
-  font-size: 10px;
-  color: #666;
-  line-height: 1.3;
 }
 </style>

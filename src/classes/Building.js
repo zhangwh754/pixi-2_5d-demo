@@ -1,6 +1,5 @@
-import { Container, Graphics, Sprite, Text, Texture, Polygon } from "pixi.js";
+import { Container, Sprite, Text, Texture, Polygon } from "pixi.js";
 import { toIsometric } from "../utils/isometric.js";
-import { updateInfoPanel } from "../utils/isometric.js";
 import {
   BUILDING_TYPES,
   getBuildingPolygon,
@@ -16,23 +15,18 @@ export class Building {
    * @param {number} gridY - 网格Y坐标
    * @param {string} type - 建筑类型键名
    * @param {number} id - 建筑ID
-   * @param {boolean} isActive - 是否激活状态
-   * @param {number} scale - 缩放比例
-   * @param {Function} onSelect - 选中回调函数
    */
-  constructor(
-    gridX,
-    gridY,
-    type,
-    id,
-    isActive = false,
-    scale = 1,
-    onSelect = null,
-  ) {
+  constructor(gridX, gridY, type, id, params = {}) {
+    const text = params.text ?? "";
+    const isActive = params.isActive ?? false;
+    const scale = params.scale ?? 1;
+    const onSelect = params.onSelect ?? null;
+
     this.gridX = gridX;
     this.gridY = gridY;
     this.type = type;
     this.id = id;
+    this.text = text;
     this.onSelect = onSelect;
     this.isActive = isActive;
     this.scale = scale;
@@ -89,7 +83,7 @@ export class Building {
 
     // 添加文字标签
     const text = new Text({
-      text: `${config.floors}F`,
+      text: `${this.text}`,
       style: {
         fontSize: 14,
         fill: 0xffffff,
@@ -139,8 +133,6 @@ export class Building {
    * @param {Object} event - 点击事件对象
    */
   onClick(event) {
-    updateInfoPanel(this, "infoPanel");
-
     // TODO 获取点击在容器内的本地坐标
     // const localPos = event.getLocalPosition(this.container);
     // console.log("click xy:", { x: localPos.x, y: localPos.y });

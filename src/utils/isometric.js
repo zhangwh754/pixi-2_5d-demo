@@ -29,19 +29,3 @@ export async function preloadImages(configs) {
   await Assets.load(urls);
 }
 
-/**
- * 更新信息面板
- * @param {Object} building - 建筑对象
- * @param {string} panelId - 面板元素ID
- */
-export function updateInfoPanel(building, panelId) {
-  const { config, id, gridX, gridY, width, height } = building;
-  const info = `
-    <h2>${config.name} #${id}</h2>
-    <p>楼层: ${config.floors}层</p>
-    <p>位置: (${gridX}, ${gridY})</p>
-    <p>高度: ${height}px</p>
-    <p>宽度: ${width}px</p>
-  `;
-  document.getElementById(panelId).innerHTML = info;
-}
