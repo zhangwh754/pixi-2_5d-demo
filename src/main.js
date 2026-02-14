@@ -20,6 +20,8 @@ let buildings = [];
 async function initApp() {
   app = new Application();
   await app.init({
+    resolution: window.devicePixelRatio,
+    autoDensity: true,
     width: CANVAS_SIZE.width,
     height: CANVAS_SIZE.height,
     backgroundAlpha: 0,
