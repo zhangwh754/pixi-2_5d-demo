@@ -26,7 +26,10 @@ import {
 } from "../constants/buildingTypes.js";
 import { preloadImages } from "../utils/isometric.js";
 import { Building } from "../classes/Building.js";
-import { generateAllBuildingsData, RESIDENT_TYPE } from "../constants/mockData.js";
+import {
+  generateAllBuildingsData,
+  RESIDENT_TYPE,
+} from "../constants/mockData.js";
 
 const emit = defineEmits(["building-select"]);
 
@@ -73,7 +76,7 @@ async function initApp() {
   worldContainer.y = CAMERA_CONFIG.initialY;
 
   // 初始化交互
-  initInteraction();
+  // initInteraction();
 }
 
 /**
@@ -266,19 +269,13 @@ onUnmounted(() => {
 
 <style scoped>
 .isometric-wrapper {
-  width: 812px;
-  height: 375px;
   position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
   overflow: hidden;
-  background: url(/assets/img_05.png) center/100% 100% no-repeat;
+  background: url(/assets/img_05.png) center/100% no-repeat;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  touch-action: none;
-}
-
-.canvas-container {
-  width: 812px;
-  height: 375px;
 }
 
 .info-container {

@@ -1,10 +1,8 @@
 <template>
-  <div id="gameContainer">
-    <IsometricWorld
-      ref="isometricWorld"
-      @building-select="handleBuildingSelect"
-    />
-  </div>
+  <IsometricWorld
+    ref="isometricWorld"
+    @building-select="handleBuildingSelect"
+  />
 </template>
 
 <script setup>
