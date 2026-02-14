@@ -1,3 +1,8 @@
+import img_01 from "@/assets/img_01.png?url";
+import img_02 from "@/assets/img_02.png?url";
+import img_03 from "@/assets/img_03.png?url";
+import img_04 from "@/assets/img_04.png?url";
+
 /**
  * 住户类型枚举
  */
@@ -6,6 +11,16 @@ export const RESIDENT_TYPE = {
   SUSPECTED_GROUP: "suspected_group", // 疑似群居
   SHOP: "shop", // 商铺
   VACANT: "vacant", // 空关户
+};
+
+/**
+ * 图标映射
+ */
+export const TYPE_ICONS = {
+  [RESIDENT_TYPE.ELDERLY_ALONE]: img_01,
+  [RESIDENT_TYPE.SUSPECTED_GROUP]: img_02,
+  [RESIDENT_TYPE.SHOP]: img_03,
+  [RESIDENT_TYPE.VACANT]: img_04,
 };
 
 /**
@@ -33,9 +48,13 @@ export function generateBuildingData(buildingId) {
     });
   }
 
+  // 提取该楼栋有哪些类型的住户
+  const types = [...new Set(households.map((h) => h.type))];
+
   return {
     buildingId,
     households,
+    types,
   };
 }
 

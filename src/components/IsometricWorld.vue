@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { Application, Container } from "pixi.js";
+import { Application, Container, Assets } from "pixi.js";
 import {
   BUILDING_TYPES,
   LAYOUT_CONFIG,
@@ -29,6 +29,7 @@ import { Building } from "../classes/Building.js";
 import {
   generateAllBuildingsData,
   RESIDENT_TYPE,
+  TYPE_ICONS,
 } from "../constants/mockData.js";
 
 const emit = defineEmits(["building-select"]);
@@ -48,6 +49,14 @@ const vacantCount = ref(0);
 let buildingsData = [];
 let selectedBuildingId = null; // 当前选中的楼栋ID
 let isBuildingClick = false; // 标记是否是楼栋点击事件
+
+/**
+ * 预加载图标资源到 Pixi 缓存
+ */
+async function preloadIcons() {
+  const iconUrls = Object.values(TYPE_ICONS);
+  await Assets.load(iconUrls);
+}
 
 /**
  * 初始化 Pixi 应用
@@ -212,10 +221,13 @@ function generateBuildings(activeId = null) {
   buildingList.forEach(([gx, gy, typeKey, text], index) => {
     const id = buildingId++;
     const isActive = activeId && id === activeId;
+    const data = buildingsData[index];
+    const types = data?.types ?? [];
     const building = new Building(gx, gy, typeKey, id, {
       text: text,
       isActive,
       scale,
+      types,
       onSelect: (selectedId) => {
         isBuildingClick = true;
         // 如果点击的是已选中的楼栋，则取消选中
@@ -256,6 +268,7 @@ function generateBuildings(activeId = null) {
 onMounted(async () => {
   await initApp();
   await preloadImages(BUILDING_TYPES);
+  await preloadIcons();
   generateBuildings();
 });
 

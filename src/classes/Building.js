@@ -1,9 +1,10 @@
-import { Container, Sprite, Text, Texture, Polygon } from "pixi.js";
+import { Container, Sprite, Text, Texture, Polygon, Assets } from "pixi.js";
 import { toIsometric } from "../utils/isometric.js";
 import {
   BUILDING_TYPES,
   getBuildingPolygon,
 } from "../constants/buildingTypes.js";
+import { TYPE_ICONS } from "../constants/mockData.js";
 
 /**
  * 建筑类
@@ -21,6 +22,7 @@ export class Building {
     const isActive = params.isActive ?? false;
     const scale = params.scale ?? 1;
     const onSelect = params.onSelect ?? null;
+    const types = params.types ?? []; // 楼栋的属性类型数组
 
     this.gridX = gridX;
     this.gridY = gridY;
@@ -30,6 +32,7 @@ export class Building {
     this.onSelect = onSelect;
     this.isActive = isActive;
     this.scale = scale;
+    this.types = types;
 
     this.container = new Container();
     this.container.scale.set(scale);
@@ -54,18 +57,6 @@ export class Building {
     // 设置容器多边形点击区域
     const points = polygon.flatMap((p) => [p.x, p.y]);
     this.container.hitArea = new Polygon(points);
-
-    // TODO 建筑图形的红色边框
-    // 创建可点击区域边框（红色多边形）
-    // const border = new Graphics();
-    // border.setStrokeStyle({ width: 2, color: 0xff0000, alpha: 0.8 });
-    // border.moveTo(polygon[0].x, polygon[0].y);
-    // for (let i = 1; i < polygon.length; i++) {
-    //   border.lineTo(polygon[i].x, polygon[i].y);
-    // }
-    // border.closePath();
-    // border.stroke();
-    // this.container.addChild(border);
 
     // 创建正常态精灵
     const normalTexture = Texture.from(config.normalImage);
@@ -93,6 +84,53 @@ export class Building {
     text.anchor.set(0.5);
     text.y = -this.height + 20;
     this.container.addChild(text);
+
+    // 添加属性图标
+    this.createTypeIcons();
+  }
+
+  /**
+   * 创建属性类型图标
+   */
+  createTypeIcons() {
+    if (!this.types || this.types.length === 0) return;
+
+    const iconSize = 32;
+    const spacing = 4;
+    const lineHeight = iconSize + spacing;
+
+    // 计算可点击区域的边界
+    const polygon = getBuildingPolygon(this.config);
+    const xs = polygon.map((p) => p.x);
+    const maxWidth = Math.max(...xs) - Math.min(...xs);
+    const maxIconsPerLine = Math.floor((maxWidth + spacing) / (iconSize + spacing));
+
+    this.types.forEach((type, index) => {
+      const iconUrl = TYPE_ICONS[type];
+      if (!iconUrl) return;
+
+      const lineIndex = Math.floor(index / maxIconsPerLine);
+      const colIndex = index % maxIconsPerLine;
+
+      const remainingIcons = this.types.length - lineIndex * maxIconsPerLine;
+      const iconsInLine = Math.min(remainingIcons, maxIconsPerLine);
+
+      const lineWidth = iconsInLine * iconSize + (iconsInLine - 1) * spacing;
+      const startX = -lineWidth / 2 + iconSize / 2;
+      const x = startX + colIndex * (iconSize + spacing);
+
+      // 图标放在建筑顶部下方
+      const y = -this.height + 10 + lineIndex * lineHeight;
+
+      const texture = Assets.get(iconUrl);
+      const icon = new Sprite(texture);
+      icon.width = iconSize;
+      icon.height = iconSize;
+      icon.anchor.set(0.5);
+      icon.x = x;
+      icon.y = y;
+      this.container.addChild(icon);
+    });
   }
 
   /**
