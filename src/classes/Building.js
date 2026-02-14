@@ -85,6 +85,7 @@ export class Building {
     const text = new Text({
       text: `${this.text}`,
       style: {
+        fontFamily: "Arial",
         fontSize: 14,
         fill: 0xffffff,
       },
