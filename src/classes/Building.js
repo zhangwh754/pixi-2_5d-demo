@@ -20,7 +20,15 @@ export class Building {
    * @param {number} scale - 缩放比例
    * @param {Function} onSelect - 选中回调函数
    */
-  constructor(gridX, gridY, type, id, isActive = false, scale = 1, onSelect = null) {
+  constructor(
+    gridX,
+    gridY,
+    type,
+    id,
+    isActive = false,
+    scale = 1,
+    onSelect = null
+  ) {
     this.gridX = gridX;
     this.gridY = gridY;
     this.type = type;
@@ -83,10 +91,8 @@ export class Building {
     const text = new Text({
       text: `${config.floors}F`,
       style: {
-        fontSize: 12,
+        fontSize: 14,
         fill: 0xffffff,
-        fontWeight: "bold",
-        stroke: { color: 0x000000, width: 2 },
       },
     });
     text.anchor.set(0.5);
@@ -135,9 +141,9 @@ export class Building {
   onClick(event) {
     updateInfoPanel(this, "infoPanel");
 
-    // 获取点击在容器内的本地坐标
-    const localPos = event.getLocalPosition(this.container);
-    console.log("click xy:", { x: localPos.x, y: localPos.y });
+    // TODO 获取点击在容器内的本地坐标
+    // const localPos = event.getLocalPosition(this.container);
+    // console.log("click xy:", { x: localPos.x, y: localPos.y });
 
     // 通过回调更新所有建筑的激活状态
     if (this.onSelect) {

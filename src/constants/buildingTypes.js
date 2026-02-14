@@ -34,7 +34,7 @@ function generatePolygon(shapeType, width, height, topScale = 1) {
 
   switch (shapeType) {
     case SHAPE.TYPE_1:
-      // 左窄右宽梯形 - img_06
+      // img_06
       return [
         { x: -45.54129094117508, y: -136.61997985839844 },
         { x: 13.098723707262423, y: -169.89999389648438 },
@@ -44,7 +44,7 @@ function generatePolygon(shapeType, width, height, topScale = 1) {
         { x: -44.90127629273758, y: -20.779953002929688 },
       ];
     case SHAPE.TYPE_2:
-      // 矩形 - img_08
+      // img_08
       return [
         { x: -60.93875056273117, y: -161.0199737548828 },
         { x: -16.778746900621798, y: -187.25999450683594 },
@@ -54,7 +54,7 @@ function generatePolygon(shapeType, width, height, topScale = 1) {
         { x: -60.93875056273117, y: -46.46000671386719 },
       ];
     case SHAPE.TYPE_3:
-      // 三角形 - img_09
+      // img_09
       return [
         { x: -64.98129338258133, y: -99.02000427246094 },
         { x: -20.821228685315702, y: -123.97996520996094 },
@@ -69,7 +69,7 @@ function generatePolygon(shapeType, width, height, topScale = 1) {
         { x: -64.98129338258133, y: -100.30000305175781 },
       ];
     case SHAPE.TYPE_4:
-      // 右窄左宽梯形 - img_10
+      // img_10
       return [
         { x: -42.800018310546875, y: -170.5800018310547 },
         { x: -3.119964599609375, y: -192.97999572753906 },
@@ -146,15 +146,42 @@ export function getBuildingPolygon(config) {
 export const LAYOUT_CONFIG = {
   gridSize: 50,
   // 全局缩放比例
-  scale: 0.6,
+  scale: 0.5,
   buildings: [
     [2.8, 1.4, "BUILDING_1"],
-    [2.8, 2.2, "BUILDING_1"],
-    [2.8, 3.0, "BUILDING_1"],
-    // [0, 2.4, "BUILDING_1"],
-    // [2, 3, "BUILDING_2"],
-    // [4, 3, "BUILDING_3"],
-    // [2, 2, "BUILDING_4"],
+    [2.8, 2.1, "BUILDING_1"],
+    [2.8, 2.8, "BUILDING_1"],
+
+    [0.8, 4.5, "BUILDING_2"],
+    [1.73, 4.5, "BUILDING_2"],
+    [2.66, 4.5, "BUILDING_2"],
+
+    [-0.2, 3.3, "BUILDING_2"],
+    [0.73, 3.3, "BUILDING_2"],
+
+    [-1, 2.1, "BUILDING_2"],
+    [-0.07, 2.1, "BUILDING_2"],
+    [0.86, 2.1, "BUILDING_2"],
+
+    [-1.5, 0.9, "BUILDING_2"],
+    [-0.57, 0.9, "BUILDING_2"],
+    [0.36, 0.9, "BUILDING_2"],
+    [1.29, 0.9, "BUILDING_2"],
+
+    [-1.5, -0.4, "BUILDING_2"],
+    [-0.57, -0.4, "BUILDING_2"],
+    [0.36, -0.4, "BUILDING_2"],
+    [1.29, -0.4, "BUILDING_2"],
+
+    [2.8, -0.1, "BUILDING_3"],
+    [2.8, -0.8, "BUILDING_3"],
+    [2.8, -1.5, "BUILDING_3"],
+
+    [-1.1, -2.1, "BUILDING_4"],
+    [-0.55, -2.2, "BUILDING_4"],
+    [0, -2.2, "BUILDING_4"],
+    [0.55, -2.2, "BUILDING_4"],
+    [1.1, -2.1, "BUILDING_4"],
   ],
 };
 
