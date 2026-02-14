@@ -138,7 +138,7 @@ export function getBuildingPolygon(config) {
     config.shape,
     config.width,
     config.height,
-    config.topScale
+    config.topScale,
   );
 }
 

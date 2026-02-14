@@ -27,7 +27,7 @@ export class Building {
     id,
     isActive = false,
     scale = 1,
-    onSelect = null
+    onSelect = null,
   ) {
     this.gridX = gridX;
     this.gridY = gridY;
