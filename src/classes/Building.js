@@ -133,10 +133,6 @@ export class Building {
    * @param {Object} event - 点击事件对象
    */
   onClick(event) {
-    // TODO 获取点击在容器内的本地坐标
-    // const localPos = event.getLocalPosition(this.container);
-    // console.log("click xy:", { x: localPos.x, y: localPos.y });
-
     // 通过回调更新所有建筑的激活状态
     if (this.onSelect) {
       this.onSelect(this.id);
